@@ -17,9 +17,12 @@ export default function FormField({
   inputMode,
   maxLength,
   required,
+  layout = 'stacked',
 }) {
+  const fieldClass = layout === 'inline' ? `${styles.field} ${styles.inline}` : styles.field;
+
   return (
-    <div className={styles.field}>
+    <div className={fieldClass}>
       <label htmlFor={id} className={styles.label}>
         {label}
       </label>

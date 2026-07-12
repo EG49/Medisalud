@@ -16,3 +16,34 @@
     font-size: 1.1rem;
   }
 }
+
+/* Variante inline: label a la izquierda, input compacto a la derecha (usada en Registro) */
+.inline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.inline .label {
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+.inline :global(input) {
+  max-width: 180px;
+  min-height: 30px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+  .inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inline :global(input) {
+    max-width: 100%;
+  }
+}
