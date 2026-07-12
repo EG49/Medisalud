@@ -1,0 +1,28 @@
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 5rem 3rem;
+  min-height: calc(100vh - 173px - 358px);
+}
+
+.illustration {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    flex-direction: column;
+    padding: 3rem 1.5rem;
+  }
+
+  .illustration {
+    max-width: 240px;
+  }
+}

@@ -1,0 +1,18 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.label {
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .label {
+    font-size: 1.1rem;
+  }
+}
