@@ -2,12 +2,12 @@ import DashboardLayout from '../../../templates/DashboardLayout/DashboardLayout'
 import { pacienteSidebarMenu } from '../../../../features/paciente/sidebarMenu';
 import styles from './InicioPage.module.css';
 
-export default function InicioPage({ usuario, onLogout }) {
+export default function InicioPage({ usuario, onLogout, onNavigate }) {
   return (
     <DashboardLayout
       items={pacienteSidebarMenu}
       activeId="inicio"
-      onNavigate={(id, event) => event.preventDefault()}
+      onNavigate={onNavigate}
       usuario={usuario}
       onLogout={onLogout}
     >
