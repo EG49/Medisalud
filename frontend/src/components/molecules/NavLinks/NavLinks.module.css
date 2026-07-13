@@ -15,11 +15,23 @@
   font-size: 1rem;
   color: var(--color-text-secondary);
   text-decoration: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-button);
 }
 
 .link:hover,
 .link:focus-visible {
   color: var(--color-primary);
+}
+
+.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+}
+
+.active:hover {
+  color: var(--color-white);
 }
 
 @media (max-width: 900px) {

@@ -18,6 +18,13 @@
   color: var(--color-primary);
 }
 
+.logoFooter {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
 .tagline {
   margin: 0.25rem 0 0;
   font-size: var(--font-size-label);

@@ -8,6 +8,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.top}>
         <div className={styles.brandBlock}>
+          <img src="/assets/logo-icono.png" alt="" className={styles.logoFooter} />
           <p className={styles.brandName}>MediSalud</p>
           <p className={styles.tagline}>Tu salud en buenas manos</p>
         </div>

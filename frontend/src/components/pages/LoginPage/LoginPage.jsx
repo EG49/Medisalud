@@ -3,7 +3,7 @@ import LoginForm from '../../organisms/LoginForm/LoginForm';
 import styles from './LoginPage.module.css';
 import { enviarCodigo, iniciarSesion } from '../../../api/authApi';
 
-export default function LoginPage({ onLoginSuccess, goToRegistro }) {
+export default function LoginPage({ onLoginSuccess, goToRegistro, onNavigateSection }) {
   const handleEnviarCodigo = async ({ cedula, celular }) => {
     try {
       await enviarCodigo({ cedula, celular });
@@ -30,7 +30,7 @@ export default function LoginPage({ onLoginSuccess, goToRegistro }) {
   };
 
   return (
-    <AuthLayout onIngresar={() => {}} onRegistrarse={goToRegistro}>
+    <AuthLayout onIngresar={() => {}} onRegistrarse={goToRegistro} onNavigateSection={onNavigateSection}>
       <div className={styles.hero}>
         <img
           className={styles.illustration}

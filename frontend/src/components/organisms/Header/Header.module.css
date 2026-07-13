@@ -15,7 +15,9 @@
 }
 
 .logo {
-  font-size: 2.5rem;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
 }
 
 .brandName {

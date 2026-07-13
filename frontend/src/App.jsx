@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PublicHomePage from './components/pages/PublicHomePage/PublicHomePage';
 import LoginPage from './components/pages/LoginPage/LoginPage';
 import RegisterPage from './components/pages/RegisterPage/RegisterPage';
 import InicioPage from './components/pages/paciente/InicioPage/InicioPage';
@@ -10,9 +11,8 @@ import NotificacionesPage from './components/pages/paciente/NotificacionesPage/N
 import PerfilPage from './components/pages/paciente/PerfilPage/PerfilPage';
 
 /**
- * Navegación temporal con estado local (login / registro / secciones internas).
- * Se reemplaza por routes/AppRouter.jsx (react-router) cuando conectemos
- * el resto de roles y rutas protegidas por sesión.
+ * Navegación temporal con estado local. Se reemplaza por routes/AppRouter.jsx
+ * (react-router) cuando conectemos el resto de roles y rutas protegidas.
  */
 const PAGINAS_INTERNAS = {
   inicio: InicioPage,
@@ -25,9 +25,16 @@ const PAGINAS_INTERNAS = {
 };
 
 export default function App() {
-  const [vista, setVista] = useState('login');
+  // 'publico' = landing sin login, es lo primero que ve cualquier visitante.
+  const [vista, setVista] = useState('publico');
   const [usuario, setUsuario] = useState(null);
   const [paginaActiva, setPaginaActiva] = useState('inicio');
+  const [seccionPendiente, setSeccionPendiente] = useState(null);
+
+  const irALandingConSeccion = (href) => {
+    setSeccionPendiente(href);
+    setVista('publico');
+  };
 
   const handleLoginSuccess = (usuarioAutenticado) => {
     setUsuario(usuarioAutenticado ?? { nombre: 'María Fernández', rol: 'paciente' });
@@ -42,7 +49,7 @@ export default function App() {
 
   const handleLogout = () => {
     setUsuario(null);
-    setVista('login');
+    setVista('publico');
   };
 
   const handleNavigate = (id, event) => {
@@ -66,14 +73,26 @@ export default function App() {
       <RegisterPage
         onRegistroExitoso={handleRegistroExitoso}
         goToLogin={() => setVista('login')}
+        onNavigateSection={irALandingConSeccion}
+      />
+    );
+  }
+
+  if (vista === 'login') {
+    return (
+      <LoginPage
+        onLoginSuccess={handleLoginSuccess}
+        goToRegistro={() => setVista('registro')}
+        onNavigateSection={irALandingConSeccion}
       />
     );
   }
 
   return (
-    <LoginPage
-      onLoginSuccess={handleLoginSuccess}
-      goToRegistro={() => setVista('registro')}
+    <PublicHomePage
+      onIngresar={() => setVista('login')}
+      onRegistrarse={() => setVista('registro')}
+      scrollTargetInicial={seccionPendiente}
     />
   );
 }

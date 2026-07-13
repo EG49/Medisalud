@@ -3,7 +3,7 @@ import RegisterForm from '../../organisms/RegisterForm/RegisterForm';
 import styles from './RegisterPage.module.css';
 import { registrarUsuario } from '../../../api/authApi';
 
-export default function RegisterPage({ onRegistroExitoso, goToLogin }) {
+export default function RegisterPage({ onRegistroExitoso, goToLogin, onNavigateSection }) {
   const handleRegistrarse = async (datos) => {
     try {
       const usuario = await registrarUsuario(datos);
@@ -14,7 +14,7 @@ export default function RegisterPage({ onRegistroExitoso, goToLogin }) {
   };
 
   return (
-    <AuthLayout onIngresar={goToLogin} onRegistrarse={() => {}}>
+    <AuthLayout onIngresar={goToLogin} onRegistrarse={() => {}} onNavigateSection={onNavigateSection}>
       <div className={styles.hero}>
         <RegisterForm onRegistrarse={handleRegistrarse} onIrALogin={goToLogin} />
       </div>
