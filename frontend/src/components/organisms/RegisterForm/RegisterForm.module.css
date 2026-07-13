@@ -38,6 +38,20 @@
   gap: 1.1rem;
 }
 
+.photoContainer {
+  width: 220px;
+  min-height: 260px;
+  border-radius: 30px;
+  background-image: url('/assets/registro-fondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
 .actions {
   display: flex;
   align-items: center;
@@ -54,15 +68,6 @@
   font-size: 0.95rem;
   cursor: pointer;
   padding: 0;
-}
-.photoContainer {
-  width: 220px;
-  min-height: 260px;
-  border-radius: 30px;
-  background-image: url('/assets/registro-fondo.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 @media (max-width: 720px) {

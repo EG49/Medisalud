@@ -41,7 +41,9 @@ export default function RegisterForm({ onRegistrarse, onIrALogin }) {
       <p className={styles.subtitle}>Tan fácil como saber tu cédula y número celular</p>
 
       <div className={styles.content}>
-        <AvatarUpload previewUrl={previewUrl} onChange={handleFoto} />
+        <div className={styles.photoContainer}>
+          <AvatarUpload previewUrl={previewUrl} onChange={handleFoto} />
+        </div>
 
         <div className={styles.fields}>
           <FormField

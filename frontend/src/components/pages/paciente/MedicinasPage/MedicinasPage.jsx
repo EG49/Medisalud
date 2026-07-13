@@ -7,9 +7,9 @@ import styles from './MedicinasPage.module.css';
 
 export default function MedicinasPage({ usuario, onLogout, onNavigate }) {
   // TODO: reemplazar mockRecetas por recetaApi.getMisRecetas() cuando exista el backend.
-  // La disponibilidad NUNCA viene del servidor como número fijo -- se recalcula
-  // siempre en el cliente con calcularDisponible(), tal como definimos.
-  const recetas = mockRecetas;
+  // Cada receta (documento) puede traer varios medicamentos (items) --
+  // aquí los aplanamos porque esta pantalla es "por medicina", no "por documento".
+  const items = mockRecetas.flatMap((receta) => receta.items);
 
   return (
     <DashboardLayout
@@ -25,14 +25,14 @@ export default function MedicinasPage({ usuario, onLogout, onNavigate }) {
       </p>
 
       <div className={styles.grid}>
-        {recetas.map((receta) => {
-          const { disponible, proximaToma } = calcularDisponible(receta);
-          const total = receta.cantidadTotal ?? totalTomas(receta);
+        {items.map((item) => {
+          const { disponible, proximaToma } = calcularDisponible(item);
+          const total = item.cantidadTotal ?? totalTomas(item);
 
           return (
             <MedicineCard
-              key={receta.id}
-              receta={receta}
+              key={item.id}
+              receta={item}
               disponible={disponible}
               total={total}
               proximaToma={proximaToma}

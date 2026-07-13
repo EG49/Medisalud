@@ -4,12 +4,6 @@ import styles from './LoginPage.module.css';
 import { enviarCodigo, iniciarSesion } from '../../../api/authApi';
 
 export default function LoginPage({ onLoginSuccess, goToRegistro }) {
-
-   
-
-
-
-
   const handleEnviarCodigo = async ({ cedula, celular }) => {
     try {
       await enviarCodigo({ cedula, celular });
@@ -18,12 +12,15 @@ export default function LoginPage({ onLoginSuccess, goToRegistro }) {
       console.error('No se pudo enviar el código', error);
     }
   };
+
   const handleIniciarSesion = async (credenciales) => {
     try {
       const usuario = await iniciarSesion(credenciales);
       onLoginSuccess?.(usuario);
     } catch (error) {
       // TEMPORAL — quitar cuando exista /api/auth/login en Flask.
+      // Mientras tanto, cualquier intento de login entra igual como demo,
+      // así se puede ver el Dashboard/Sidebar sin backend real.
       console.warn('Backend no disponible todavía, entrando en modo demo', error);
       onLoginSuccess?.({
         nombre: credenciales.cedula ? `Paciente ${credenciales.cedula}` : 'Usuario demo',
@@ -31,15 +28,6 @@ export default function LoginPage({ onLoginSuccess, goToRegistro }) {
       });
     }
   };
-  /*
-  const handleIniciarSesion = async (credenciales) => {
-    try {
-      const usuario = await iniciarSesion(credenciales);
-      onLoginSuccess?.(usuario);
-    } catch (error) {
-      console.error('No se pudo iniciar sesión', error);
-    }
-  };*/
 
   return (
     <AuthLayout onIngresar={() => {}} onRegistrarse={goToRegistro}>
