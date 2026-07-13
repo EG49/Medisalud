@@ -1,0 +1,12 @@
+.title {
+  margin: 0 0 0.75rem;
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  max-width: 560px;
+}

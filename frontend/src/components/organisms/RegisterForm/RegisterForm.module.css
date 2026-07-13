@@ -55,6 +55,15 @@
   cursor: pointer;
   padding: 0;
 }
+.photoContainer {
+  width: 220px;
+  min-height: 260px;
+  border-radius: 30px;
+  background-image: url('/assets/registro-fondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 @media (max-width: 720px) {
   .card {

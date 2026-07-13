@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import LoginPage from './components/pages/LoginPage/LoginPage';
 import RegisterPage from './components/pages/RegisterPage/RegisterPage';
+import InicioPage from './components/pages/paciente/InicioPage/InicioPage';
 
 /**
  * Alternancia temporal entre Login/Registro con estado local.
@@ -9,10 +10,12 @@ import RegisterPage from './components/pages/RegisterPage/RegisterPage';
  */
 export default function App() {
   const [vista, setVista] = useState('login');
+  const [usuario, setUsuario] = useState(null);
 
-  const handleLoginSuccess = (usuario) => {
-    // TODO: guardar sesión en context/AuthContext y redirigir según rol
-    console.log('Usuario autenticado:', usuario);
+  const handleLoginSuccess = (usuarioAutenticado) => {
+    // DEMO: mientras no hay backend real, simulamos el usuario logueado
+    setUsuario(usuarioAutenticado ?? { nombre: 'María Fernández', rol: 'paciente' });
+    setVista('dashboard');
   };
 
   const handleRegistroExitoso = (usuario) => {
@@ -20,6 +23,15 @@ export default function App() {
     console.log('Usuario registrado:', usuario);
     setVista('login');
   };
+
+    const handleLogout = () => {
+    setUsuario(null);
+    setVista('login');
+  };
+  if (vista === 'dashboard' && usuario) {
+    return <InicioPage usuario={usuario} onLogout={handleLogout} />;
+  }
+
 
   if (vista === 'registro') {
     return (
