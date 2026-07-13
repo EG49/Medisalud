@@ -41,3 +41,22 @@ export const UMBRAL_STOCK_BAJO = 2;
 export function estaPorAcabarse(disponible) {
   return disponible <= UMBRAL_STOCK_BAJO;
 }
+
+/**
+ * Busca, entre todos los items de receta activos, cuál tiene la próxima
+ * toma más cercana en el tiempo. Se usa en Inicio para destacar "lo que
+ * sigue" sin que el paciente tenga que revisar cada medicina una por una.
+ */
+export function proximaTomaGeneral(items) {
+  let mejor = null;
+
+  for (const item of items) {
+    const { disponible, proximaToma } = calcularDisponible(item);
+    if (!proximaToma || disponible <= 0) continue;
+    if (!mejor || proximaToma < mejor.proximaToma) {
+      mejor = { item, disponible, proximaToma };
+    }
+  }
+
+  return mejor;
+}
