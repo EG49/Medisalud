@@ -1,4 +1,5 @@
 import { LogOut, X } from 'lucide-react';
+import Badge from '../../atoms/Badge/Badge';
 import styles from './Sidebar.module.css';
 
 /**
@@ -17,6 +18,7 @@ export default function Sidebar({
   onLogout,
   isMobileOpen = false,
   onCloseMobile,
+  badges = {},
 }) {
   const asideClass = [styles.sidebar, isMobileOpen ? styles.open : ''].join(' ').trim();
 
@@ -54,7 +56,10 @@ export default function Sidebar({
                       onCloseMobile?.();
                     }}
                   >
-                    <Icon size={24} aria-hidden="true" />
+                    <span className={styles.iconWrapper}>
+                      <Icon size={24} aria-hidden="true" />
+                      <Badge count={badges[id]} />
+                    </span>
                     <span>{label}</span>
                   </a>
                 </li>

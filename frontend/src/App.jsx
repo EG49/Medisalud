@@ -6,6 +6,7 @@ import MedicinasPage from './components/pages/paciente/MedicinasPage/MedicinasPa
 import RecetasPage from './components/pages/paciente/RecetasPage/RecetasPage';
 import ExamenesPage from './components/pages/paciente/ExamenesPage/ExamenesPage';
 import PedidosPage from './components/pages/paciente/PedidosPage/PedidosPage';
+import NotificacionesPage from './components/pages/paciente/NotificacionesPage/NotificacionesPage';
 
 /**
  * Navegación temporal con estado local (login / registro / secciones internas).
@@ -18,8 +19,9 @@ const PAGINAS_INTERNAS = {
   recetas: RecetasPage,
   examenes: ExamenesPage,
   pedidos: PedidosPage,
-  // notificaciones, perfil: se agregan a medida que construyamos cada
-  // pantalla -- por ahora el sidebar las muestra pero no tienen página propia todavía.
+  notificaciones: NotificacionesPage,
+  // perfil: se agrega a continuación -- por ahora el sidebar lo muestra
+  // pero no tiene página propia todavía.
 };
 
 export default function App() {

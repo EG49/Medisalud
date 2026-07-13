@@ -56,6 +56,11 @@
   border-left: 4px solid transparent;
 }
 
+.iconWrapper {
+  position: relative;
+  display: inline-flex;
+}
+
 .item:hover,
 .item:focus-visible {
   background: var(--color-background);

@@ -14,6 +14,7 @@ export default function DashboardLayout({
   onNavigate,
   usuario,
   onLogout,
+  badges,
   children,
 }) {
   const [isMobileOpen, setMobileOpen] = useState(false);
@@ -26,6 +27,7 @@ export default function DashboardLayout({
         onNavigate={onNavigate}
         usuario={usuario}
         onLogout={onLogout}
+        badges={badges}
         isMobileOpen={isMobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
       />
