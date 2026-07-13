@@ -7,6 +7,7 @@ import RecetasPage from './components/pages/paciente/RecetasPage/RecetasPage';
 import ExamenesPage from './components/pages/paciente/ExamenesPage/ExamenesPage';
 import PedidosPage from './components/pages/paciente/PedidosPage/PedidosPage';
 import NotificacionesPage from './components/pages/paciente/NotificacionesPage/NotificacionesPage';
+import PerfilPage from './components/pages/paciente/PerfilPage/PerfilPage';
 
 /**
  * Navegación temporal con estado local (login / registro / secciones internas).
@@ -20,8 +21,7 @@ const PAGINAS_INTERNAS = {
   examenes: ExamenesPage,
   pedidos: PedidosPage,
   notificaciones: NotificacionesPage,
-  // perfil: se agrega a continuación -- por ahora el sidebar lo muestra
-  // pero no tiene página propia todavía.
+  perfil: PerfilPage,
 };
 
 export default function App() {

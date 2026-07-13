@@ -1,0 +1,101 @@
+.card {
+  background: var(--color-white);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.titulo {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--color-primary);
+}
+
+.invitarBtn {
+  background: none;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.formulario {
+  background: var(--color-background);
+  border-radius: 14px;
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.formLabel {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.formFila {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.formInput {
+  flex: 1;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.formCancelar {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vacio {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.pendientesBloque {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.pendientesTitulo {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 560px) {
+  .formFila {
+    flex-direction: column;
+  }
+}
