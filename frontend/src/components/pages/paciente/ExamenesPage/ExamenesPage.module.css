@@ -1,0 +1,89 @@
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.subtitle {
+  margin: 0 0 2rem;
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  max-width: 560px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.diagramaColumna {
+  position: sticky;
+  top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: var(--color-white);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem 1rem;
+}
+
+.chipGeneral {
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.chipGeneralActivo {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.verTodos {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.listaColumna {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filtroActivo {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.vacio {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .diagramaColumna {
+    position: static;
+  }
+}

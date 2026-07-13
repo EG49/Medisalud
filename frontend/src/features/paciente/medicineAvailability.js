@@ -33,3 +33,11 @@ export function calcularDisponible(receta) {
 export function totalTomas(receta) {
   return Math.round((receta.duracionDias * 24) / receta.frecuenciaHoras);
 }
+
+// Umbral centralizado de "se está por acabar" -- usado para sugerir
+// automáticamente qué medicinas incluir al solicitar un nuevo pedido.
+export const UMBRAL_STOCK_BAJO = 2;
+
+export function estaPorAcabarse(disponible) {
+  return disponible <= UMBRAL_STOCK_BAJO;
+}

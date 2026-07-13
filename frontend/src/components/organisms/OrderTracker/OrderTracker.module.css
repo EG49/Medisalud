@@ -1,0 +1,73 @@
+.tracker {
+  display: flex;
+  align-items: flex-start;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.paso {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.circulo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  z-index: 1;
+}
+
+.completado {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.actual {
+  background: var(--color-white);
+  border: 3px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.label {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  max-width: 90px;
+}
+
+.labelActual {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.linea {
+  position: absolute;
+  top: 17px;
+  left: calc(50% + 20px);
+  right: calc(-50% + 20px);
+  height: 3px;
+  background: var(--color-border);
+}
+
+.lineaCompletada {
+  background: var(--color-primary);
+}
+
+@media (max-width: 640px) {
+  .label {
+    font-size: 0.7rem;
+    max-width: 60px;
+  }
+}
