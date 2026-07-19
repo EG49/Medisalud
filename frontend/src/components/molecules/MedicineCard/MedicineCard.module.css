@@ -1,0 +1,80 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  background: var(--color-white);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.nombre {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+}
+
+.presentacion {
+  margin: 0.15rem 0 0;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.badgeInactiva {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  background: var(--color-border);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.uso {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.disponibilidad {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.disponibilidadTexto {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.cantidad {
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.deTotal {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.indicaciones {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.proximaToma {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}

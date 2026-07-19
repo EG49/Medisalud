@@ -1,0 +1,108 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: var(--color-white);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.medico {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.especialidad {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.metaDerecha {
+  text-align: right;
+}
+
+.hospital {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.fecha {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item {
+  background: var(--color-background);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+
+.itemNombre {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+}
+
+.presentacion {
+  font-weight: var(--font-weight-regular);
+  font-size: 0.9rem;
+}
+
+.dosis {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.itemIndicaciones {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.extra {
+  background: var(--color-surface-soft);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+
+.extraLabel {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.extraTexto {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}

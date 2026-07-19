@@ -1,0 +1,23 @@
+.title {
+  margin: 0 0 1.75rem;
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.seccionTitulo {
+  margin: 0 0 0.9rem;
+  font-size: 1.3rem;
+  color: var(--color-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
