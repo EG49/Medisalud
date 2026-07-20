@@ -55,16 +55,71 @@ def login(cedula, celular, codigo):
     return usuario
 
 
-def registrar(nombre, apellidos, cedula, celular, fecha_nacimiento):
+# Roles que SÍ pueden registrarse por este endpoint público.
+# 'admin' queda deliberadamente fuera -- esas cuentas se crean por un canal
+# aparte y controlado (ver backend/scripts/crear_admin.py), nunca por un
+# formulario abierto al público.
+ROLES_REGISTRO_PUBLICO = {"paciente", "medico", "repartidor"}
+
+
+def registrar(rol, datos):
+    if rol not in ROLES_REGISTRO_PUBLICO:
+        raise AuthError("Ese rol no puede registrarse por este medio.")
+
+    cedula = datos.get("cedula")
+    celular = datos.get("celular")
+
     if usuario_repository.buscar_por_cedula(cedula):
         raise AuthError("Ya existe una cuenta con esa cédula.")
     if usuario_repository.buscar_por_celular(celular):
         raise AuthError("Ya existe una cuenta con ese celular.")
 
-    return usuario_repository.crear_paciente(
-        nombre=nombre,
-        apellidos=apellidos,
-        cedula=cedula,
-        celular=celular,
-        fecha_nacimiento=fecha_nacimiento,
-    )
+    if rol == "paciente":
+        campos_faltantes = [
+            c for c in ("nombre", "apellidos", "cedula", "celular", "fecha_nacimiento") if not datos.get(c)
+        ]
+        if campos_faltantes:
+            raise AuthError(f"Faltan campos: {', '.join(campos_faltantes)}")
+        try:
+            fecha_nacimiento = datetime.strptime(datos["fecha_nacimiento"], "%Y-%m-%d").date()
+        except ValueError:
+            raise AuthError("fecha_nacimiento debe tener formato YYYY-MM-DD.")
+        return usuario_repository.crear_paciente(
+            nombre=datos["nombre"],
+            apellidos=datos["apellidos"],
+            cedula=cedula,
+            celular=celular,
+            fecha_nacimiento=fecha_nacimiento,
+        )
+
+    if rol == "medico":
+        campos_faltantes = [
+            c for c in ("nombre", "apellidos", "cedula", "celular", "especialidad", "num_licencia")
+            if not datos.get(c)
+        ]
+        if campos_faltantes:
+            raise AuthError(f"Faltan campos: {', '.join(campos_faltantes)}")
+        return usuario_repository.crear_medico(
+            nombre=datos["nombre"],
+            apellidos=datos["apellidos"],
+            cedula=cedula,
+            celular=celular,
+            especialidad=datos["especialidad"],
+            num_licencia=datos["num_licencia"],
+        )
+
+    if rol == "repartidor":
+        campos_faltantes = [
+            c for c in ("nombre", "apellidos", "cedula", "celular", "vehiculo", "zona_cobertura")
+            if not datos.get(c)
+        ]
+        if campos_faltantes:
+            raise AuthError(f"Faltan campos: {', '.join(campos_faltantes)}")
+        return usuario_repository.crear_repartidor(
+            nombre=datos["nombre"],
+            apellidos=datos["apellidos"],
+            cedula=cedula,
+            celular=celular,
+            vehiculo=datos["vehiculo"],
+            zona_cobertura=datos["zona_cobertura"],
+        )

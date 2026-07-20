@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from flask import Blueprint, jsonify, request
 
 from app.services import auth_service
@@ -42,24 +40,13 @@ def login():
 @auth_bp.post("/registro")
 def registro():
     data = request.get_json(silent=True) or {}
-    campos_requeridos = ["nombre", "apellidos", "cedula", "celular", "fecha_nacimiento"]
-    faltantes = [campo for campo in campos_requeridos if not data.get(campo)]
-    if faltantes:
-        return jsonify({"message": f"Faltan campos: {', '.join(faltantes)}"}), 400
+    rol = data.get("rol", "paciente")  # el registro de paciente sigue siendo el default
+
+    if not data.get("cedula") or not data.get("celular"):
+        return jsonify({"message": "Cédula y celular son obligatorios."}), 400
 
     try:
-        fecha_nacimiento = datetime.strptime(data["fecha_nacimiento"], "%Y-%m-%d").date()
-    except ValueError:
-        return jsonify({"message": "fecha_nacimiento debe tener formato YYYY-MM-DD."}), 400
-
-    try:
-        usuario = auth_service.registrar(
-            nombre=data["nombre"],
-            apellidos=data["apellidos"],
-            cedula=data["cedula"],
-            celular=data["celular"],
-            fecha_nacimiento=fecha_nacimiento,
-        )
+        usuario = auth_service.registrar(rol, data)
     except auth_service.AuthError as error:
         return jsonify({"message": str(error)}), 400
 
