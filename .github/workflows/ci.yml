@@ -18,6 +18,24 @@ permissions:
   id-token: write
 
 jobs:
+  pruebas-backend:
+    name: Pruebas del backend (pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: pytest (SQLite en memoria, no necesita Postgres)
+        run: python -m pytest -q
+
   pruebas-unitarias:
     name: Pruebas unitarias (Jest, cobertura ≥80%)
     runs-on: ubuntu-latest
@@ -92,7 +110,7 @@ jobs:
   desplegar:
     name: Build PWA + deploy a GitHub Pages
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: [pruebas-unitarias, pruebas-e2e]
+    needs: [pruebas-backend, pruebas-unitarias, pruebas-e2e]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

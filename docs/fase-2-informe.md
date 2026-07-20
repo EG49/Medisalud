@@ -41,6 +41,10 @@ Resultado (umbral exigido: 80 % — configurado como bloqueo en `jest.config.cjs
 
 El reporte HTML completo se genera en `frontend/coverage/` y se publica como artefacto (`reporte-cobertura`) en cada ejecución del pipeline.
 
+### Pruebas del backend (pytest)
+
+Suite de **17 pruebas** en `backend/tests/` que corren sobre SQLite en memoria (no necesitan PostgreSQL): registro por rol (paciente/médico/repartidor), bloqueo del registro público de `admin`, ciclo completo de código de verificación (incluido expiración y un solo uso), duplicados de cédula/celular, protección de rutas por token y por rol, y el flujo médico → receta → paciente con su notificación.
+
 ### Pruebas E2E (Cypress)
 
 Tres flujos críticos contra el **backend real** (Flask + seed), en `frontend/cypress/e2e/`:

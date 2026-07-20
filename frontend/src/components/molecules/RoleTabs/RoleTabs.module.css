@@ -1,0 +1,22 @@
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  background: var(--color-white);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: 999px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.activo {
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+}

@@ -144,3 +144,24 @@ copia a sus cuidadores aprobados; los cambios de estado del pedido también.
 - El modelo de datos completo (14 tablas, con las relaciones explicadas) está documentado en `../docs/diagrama-er.md`.
 - Los modelos de SQLAlchemy (`app/models/`) y el SQL puro (`db/schema.sql`) describen exactamente el mismo esquema — usa `schema.sql` si algún día necesitas crear la base sin tocar Python.
 - El siguiente paso del frontend: mandar el token en el header `Authorization` desde `httpClient.js` y reemplazar cada `mock*.js` por su llamada real (cada mock indica su endpoint en el comentario de la primera línea).
+
+## Pruebas automatizadas del backend
+
+```cmd
+pip install -r requirements-dev.txt
+python -m pytest -q
+```
+Usan SQLite en memoria (`TestConfig`), así que **no necesitas PostgreSQL corriendo**
+ni tocar tu base de desarrollo. También se ejecutan en cada push (ver `.github/workflows/ci.yml`).
+
+## Registro por rol
+
+`POST /api/auth/registro/<rol>` (o `POST /api/auth/registro` con `{"rol": "..."}`):
+
+| Rol | Campos obligatorios |
+|---|---|
+| `paciente` | nombre, apellidos, cedula, celular, **fecha_nacimiento** |
+| `medico` | nombre, apellidos, cedula, celular, **especialidad, num_licencia** |
+| `repartidor` | nombre, apellidos, cedula, celular, **vehiculo, zona_cobertura** |
+
+`admin` **no** puede registrarse por la web: se crea con `python scripts/crear_admin.py`.

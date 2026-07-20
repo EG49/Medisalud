@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Pill, FileText, Stethoscope, Truck } from 'lucide-react';
 import DashboardLayout from '../../../templates/DashboardLayout/DashboardLayout';
 import MedicineCard from '../../../molecules/MedicineCard/MedicineCard';
@@ -15,6 +16,10 @@ import {
   estaPorAcabarse,
   calcularDisponible,
 } from '../../../../features/paciente/medicineAvailability';
+import {
+  programarRecordatorio,
+  revisarTomasPerdidas,
+} from '../../../../offline/notifications/medicineReminders';
 import styles from './InicioPage.module.css';
 
 export default function InicioPage({ usuario, onLogout, onNavigate }) {
@@ -29,11 +34,23 @@ export default function InicioPage({ usuario, onLogout, onNavigate }) {
   const itemsRecetas = (recetas ?? []).flatMap((receta) => receta.items);
   const proximaToma = proximaTomaGeneral(itemsRecetas);
 
+  useEffect(() => {
+    // Recordatorios locales (offline): revisa si hubo tomas que se pasaron
+    // mientras la app estaba cerrada y programa las pendientes. Se reejecuta
+    // cuando llegan las recetas del backend.
+    if (!itemsRecetas.length) return;
+    revisarTomasPerdidas();
+    itemsRecetas.forEach((item) => {
+      if (item.activa) programarRecordatorio(item);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recetas]);
+
   const examenMasReciente = [...(examenes ?? [])].sort(
     (a, b) => new Date(b.fecha) - new Date(a.fecha)
   )[0];
 
-  const pedidoActivo = pedidos?.activo ?? null; // null si no hay pedido en curso
+  const pedidoActivo = pedidos?.activo ?? null;
 
   const medicinasPorAcabarse = itemsRecetas.filter((item) => {
     const { disponible } = calcularDisponible(item);
