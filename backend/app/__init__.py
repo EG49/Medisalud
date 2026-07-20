@@ -16,9 +16,34 @@ def create_app(config_class=Config):
     # Importa los modelos para que Flask-Migrate los detecte al generar migraciones.
     from app import models  # noqa: F401
 
-    # Los blueprints de rutas se registran aquí a medida que se van creando:
-    # from app.routes.auth_routes import auth_bp
-    # app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    from app.routes.auth_routes import auth_bp
+    from app.routes.catalogo_routes import catalogo_bp
+    from app.routes.cuidador_routes import cuidador_bp
+    from app.routes.medico_routes import medico_bp
+    from app.routes.paciente_routes import paciente_bp
+    from app.routes.repartidor_routes import repartidor_bp
+
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(paciente_bp, url_prefix="/api/paciente")
+    app.register_blueprint(medico_bp, url_prefix="/api/medico")
+    app.register_blueprint(repartidor_bp, url_prefix="/api/repartidor")
+    app.register_blueprint(cuidador_bp, url_prefix="/api/cuidador")
+    app.register_blueprint(catalogo_bp, url_prefix="/api")
+
+    # Errores en JSON con la clave "message" (httpClient.js la lee al fallar).
+    from app.errors import ApiError
+
+    @app.errorhandler(ApiError)
+    def manejar_api_error(error):
+        return {"message": error.message}, error.status_code
+
+    @app.errorhandler(404)
+    def manejar_404(_):
+        return {"message": "Recurso no encontrado."}, 404
+
+    @app.errorhandler(405)
+    def manejar_405(_):
+        return {"message": "Método no permitido."}, 405
 
     @app.get("/api/health")
     def health_check():
