@@ -1,0 +1,50 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.contentArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mobileTopbar {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  display: flex;
+}
+
+.mobileBrand {
+  font-size: 1.3rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.main {
+  flex: 1;
+  padding: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .mobileTopbar {
+    display: flex;
+  }
+
+  .main {
+    padding: 1.5rem;
+  }
+}

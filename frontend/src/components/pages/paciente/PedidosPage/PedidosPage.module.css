@@ -1,0 +1,40 @@
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.subtitle {
+  margin: 0 0 2rem;
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  max-width: 560px;
+}
+
+.title ~ .subtitle {
+  margin-bottom: 2rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.historial {
+  margin-top: 0;
+  width: 100%;
+}
+
+.historialTitulo {
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  margin: 0 0 1rem;
+}
+
+.historialGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}

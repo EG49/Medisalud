@@ -1,0 +1,28 @@
+.grupos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.etiquetaDia {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.vacio {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}

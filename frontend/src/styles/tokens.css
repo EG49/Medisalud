@@ -1,0 +1,54 @@
+:root {
+  /* Paleta de marca */
+  --color-primary: #4A90E2;
+  --color-primary-hover: #3A7BC8;
+  --color-white: #FFFFFF;
+  --color-text-secondary: #6A6F74;
+  --color-border: #E9E9E9;
+  --color-surface-soft: #CFE2F9;
+  --color-background: #E9F2F5;
+
+  /* Tipografía */
+  --font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --font-size-logo: 2.5rem;      /* 40px */
+  --font-size-heading: 1.75rem;  /* 28px */
+  --font-size-label: 1.5rem;     /* 24px, texto grande a propósito: público adulto mayor */
+  --font-size-body: 1rem;        /* 16px */
+  --font-size-small: 0.875rem;   /* 14px */
+
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+
+  /* Radios y sombras (según diseño de Figma) */
+  --radius-pill: 27px;
+  --radius-button: 14px;
+  --shadow-card: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  /* Espaciado */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+
+  /* Foco accesible (visible para navegación por teclado) */
+  --focus-ring: 3px solid var(--color-primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  background: var(--color-white);
+  color: var(--color-text-secondary);
+}
+
+/* Foco visible consistente en toda la app (accesibilidad, adultos mayores) */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
