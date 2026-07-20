@@ -7,7 +7,9 @@ import QuickAccessCard from '../../../molecules/QuickAccessCard/QuickAccessCard'
 import { pacienteSidebarMenu } from '../../../../features/paciente/sidebarMenu';
 import { mockRecetas } from '../../../../features/paciente/mockRecetas';
 import { mockExamenes } from '../../../../features/paciente/mockExamenes';
-import { mockPedidoActivo, ESTADOS_PEDIDO } from '../../../../features/paciente/mockPedidos';
+import { mockPedidoActivo, mockHistorialPedidos, ESTADOS_PEDIDO } from '../../../../features/paciente/mockPedidos';
+import { getExamenes, getPedidos, getRecetas } from '../../../../api/pacienteApi';
+import { useApi } from '../../../../api/useApi';
 import {
   proximaTomaGeneral,
   estaPorAcabarse,
@@ -16,15 +18,22 @@ import {
 import styles from './InicioPage.module.css';
 
 export default function InicioPage({ usuario, onLogout, onNavigate }) {
-  // TODO: cada mock aquí se reemplaza por su api/*Api.js correspondiente cuando exista Flask.
-  const itemsRecetas = mockRecetas.flatMap((receta) => receta.items);
+  // Datos reales del backend; si no hay servidor (demo/offline) usan los mocks.
+  const { datos: recetas } = useApi(getRecetas, mockRecetas);
+  const { datos: examenes } = useApi(getExamenes, mockExamenes);
+  const { datos: pedidos } = useApi(getPedidos, {
+    activo: mockPedidoActivo,
+    historial: mockHistorialPedidos,
+  });
+
+  const itemsRecetas = (recetas ?? []).flatMap((receta) => receta.items);
   const proximaToma = proximaTomaGeneral(itemsRecetas);
 
-  const examenMasReciente = [...mockExamenes].sort(
+  const examenMasReciente = [...(examenes ?? [])].sort(
     (a, b) => new Date(b.fecha) - new Date(a.fecha)
   )[0];
 
-  const pedidoActivo = mockPedidoActivo; // null si no hay pedido en curso
+  const pedidoActivo = pedidos?.activo ?? null; // null si no hay pedido en curso
 
   const medicinasPorAcabarse = itemsRecetas.filter((item) => {
     const { disponible } = calcularDisponible(item);
@@ -87,13 +96,13 @@ export default function InicioPage({ usuario, onLogout, onNavigate }) {
             <QuickAccessCard
               icon={FileText}
               titulo="Recetas"
-              dato={`${mockRecetas.length} activas`}
+              dato={`${(recetas ?? []).length} activas`}
               onClick={(e) => onNavigate('recetas', e)}
             />
             <QuickAccessCard
               icon={Stethoscope}
               titulo="Exámenes"
-              dato={`${mockExamenes.length} registrados`}
+              dato={`${(examenes ?? []).length} registrados`}
               onClick={(e) => onNavigate('examenes', e)}
             />
             <QuickAccessCard

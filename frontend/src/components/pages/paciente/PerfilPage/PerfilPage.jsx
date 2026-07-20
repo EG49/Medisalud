@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardLayout from '../../../templates/DashboardLayout/DashboardLayout';
 import AvatarUpload from '../../../atoms/AvatarUpload/AvatarUpload';
 import EditableSection from '../../../molecules/EditableSection/EditableSection';
@@ -10,38 +10,114 @@ import {
   mockSolicitudesRecibidas,
   mockInvitacionesEnviadas,
 } from '../../../../features/paciente/mockCuidadores';
+import {
+  actualizarPerfil as actualizarPerfilApi,
+  aprobarSolicitud as aprobarSolicitudApi,
+  getCuidadores,
+  getPerfil,
+  invitarCuidador as invitarCuidadorApi,
+  quitarCuidador as quitarCuidadorApi,
+  rechazarSolicitud as rechazarSolicitudApi,
+} from '../../../../api/pacienteApi';
+import { useApi } from '../../../../api/useApi';
 import styles from './PerfilPage.module.css';
 
 export default function PerfilPage({ usuario, onLogout, onNavigate }) {
-  // TODO: reemplazar mocks por perfilApi.getPerfil() / cuidadorApi.* cuando exista Flask.
+  // Datos reales del backend; si no hay servidor (demo/offline) usan los mocks.
+  const { datos: perfilApi, modoDemo } = useApi(getPerfil, mockPerfil);
+  const { datos: cuidadoresApi, recargar: recargarCuidadores } = useApi(getCuidadores, {
+    vinculados: mockCuidadoresVinculados,
+    solicitudesRecibidas: mockSolicitudesRecibidas,
+    invitacionesEnviadas: mockInvitacionesEnviadas,
+  });
+
   const [perfil, setPerfil] = useState(mockPerfil);
-  const [previewUrl, setPreviewUrl] = useState(mockPerfil.fotoUrl);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [vinculados, setVinculados] = useState([]);
+  const [solicitudes, setSolicitudes] = useState([]);
+  const [invitaciones, setInvitaciones] = useState([]);
 
-  const [vinculados, setVinculados] = useState(mockCuidadoresVinculados);
-  const [solicitudes, setSolicitudes] = useState(mockSolicitudesRecibidas);
-  const [invitaciones, setInvitaciones] = useState(mockInvitacionesEnviadas);
+  useEffect(() => {
+    if (perfilApi) {
+      setPerfil(perfilApi);
+      setPreviewUrl(perfilApi.fotoUrl);
+    }
+  }, [perfilApi]);
 
-  const actualizarPerfil = (campos) => setPerfil((prev) => ({ ...prev, ...campos }));
+  useEffect(() => {
+    if (cuidadoresApi) {
+      setVinculados(cuidadoresApi.vinculados ?? []);
+      setSolicitudes(cuidadoresApi.solicitudesRecibidas ?? []);
+      setInvitaciones(cuidadoresApi.invitacionesEnviadas ?? []);
+    }
+  }, [cuidadoresApi]);
+
+  const actualizarPerfil = (campos) => {
+    setPerfil((prev) => ({ ...prev, ...campos })); // optimista
+    if (!modoDemo) {
+      actualizarPerfilApi(campos)
+        .then(setPerfil)
+        .catch((e) => alert(e.message || 'No se pudo guardar el perfil.'));
+    }
+  };
 
   const handleFoto = (file) => setPreviewUrl(URL.createObjectURL(file));
 
   const aprobarSolicitud = (id) => {
-    const solicitud = solicitudes.find((s) => s.id === id);
-    if (solicitud) {
-      setVinculados((prev) => [...prev, { ...solicitud, autorizadoPedidos: true }]);
+    if (modoDemo) {
+      const solicitud = solicitudes.find((s) => s.id === id);
+      if (solicitud) {
+        setVinculados((prev) => [...prev, { ...solicitud, autorizadoPedidos: true }]);
+      }
+      setSolicitudes((prev) => prev.filter((s) => s.id !== id));
+      return;
     }
-    setSolicitudes((prev) => prev.filter((s) => s.id !== id));
+    aprobarSolicitudApi(id)
+      .then(recargarCuidadores)
+      .catch((e) => alert(e.message || 'No se pudo aprobar la solicitud.'));
   };
 
-  const rechazarSolicitud = (id) => setSolicitudes((prev) => prev.filter((s) => s.id !== id));
-  const quitarCuidador = (id) => setVinculados((prev) => prev.filter((c) => c.id !== id));
-  const cancelarInvitacion = (id) => setInvitaciones((prev) => prev.filter((i) => i.id !== id));
+  const rechazarSolicitud = (id) => {
+    if (modoDemo) {
+      setSolicitudes((prev) => prev.filter((s) => s.id !== id));
+      return;
+    }
+    rechazarSolicitudApi(id)
+      .then(recargarCuidadores)
+      .catch((e) => alert(e.message || 'No se pudo rechazar la solicitud.'));
+  };
+
+  const quitarCuidador = (id) => {
+    if (modoDemo) {
+      setVinculados((prev) => prev.filter((c) => c.id !== id));
+      return;
+    }
+    quitarCuidadorApi(id)
+      .then(recargarCuidadores)
+      .catch((e) => alert(e.message || 'No se pudo quitar el cuidador.'));
+  };
+
+  const cancelarInvitacion = (id) => {
+    if (modoDemo) {
+      setInvitaciones((prev) => prev.filter((i) => i.id !== id));
+      return;
+    }
+    quitarCuidadorApi(id) // una invitación pendiente se elimina igual que un vínculo
+      .then(recargarCuidadores)
+      .catch((e) => alert(e.message || 'No se pudo cancelar la invitación.'));
+  };
 
   const invitarCuidador = (identificador) => {
-    setInvitaciones((prev) => [
-      ...prev,
-      { id: `i-${Date.now()}`, destinatario: identificador, fecha: new Date().toISOString() },
-    ]);
+    if (modoDemo) {
+      setInvitaciones((prev) => [
+        ...prev,
+        { id: `i-${Date.now()}`, destinatario: identificador, fecha: new Date().toISOString() },
+      ]);
+      return;
+    }
+    invitarCuidadorApi({ celular: identificador })
+      .then(recargarCuidadores)
+      .catch((e) => alert(e.message || 'No se pudo enviar la invitación.'));
   };
 
   return (

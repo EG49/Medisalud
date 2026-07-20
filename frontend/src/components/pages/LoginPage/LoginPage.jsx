@@ -2,14 +2,20 @@ import AuthLayout from '../../templates/AuthLayout/AuthLayout';
 import LoginForm from '../../organisms/LoginForm/LoginForm';
 import styles from './LoginPage.module.css';
 import { enviarCodigo, iniciarSesion } from '../../../api/authApi';
+import { guardarSesion } from '../../../api/httpClient';
+import { publicUrl } from '../../../lib/publicUrl';
 
 export default function LoginPage({ onLoginSuccess, goToRegistro, onNavigateSection }) {
   const handleEnviarCodigo = async ({ cedula, celular }) => {
     try {
       await enviarCodigo({ cedula, celular });
     } catch (error) {
-      // TODO: mostrar toast de error cuando definamos el sistema de notificaciones UI
-      console.error('No se pudo enviar el código', error);
+      if (error?.esRed) {
+        // Sin backend (demo en GitHub Pages): se permite continuar igual.
+        console.warn('Backend no disponible — modo demo, cualquier código sirve.');
+        return;
+      }
+      alert(error.message || 'No se pudo enviar el código. Revisa tus datos.');
     }
   };
 
@@ -18,14 +24,15 @@ export default function LoginPage({ onLoginSuccess, goToRegistro, onNavigateSect
       const usuario = await iniciarSesion(credenciales);
       onLoginSuccess?.(usuario);
     } catch (error) {
-      // TEMPORAL — quitar cuando exista /api/auth/login en Flask.
-      // Mientras tanto, cualquier intento de login entra igual como demo,
-      // así se puede ver el Dashboard/Sidebar sin backend real.
-      console.warn('Backend no disponible todavía, entrando en modo demo', error);
-      onLoginSuccess?.({
-        nombre: credenciales.cedula ? `Paciente ${credenciales.cedula}` : 'Usuario demo',
-        rol: 'paciente',
-      });
+      if (error?.esRed) {
+        // MODO DEMO: si el servidor no responde (app deployada sin backend),
+        // se entra con un usuario de ejemplo y las pantallas usan datos demo.
+        const usuarioDemo = { nombre: 'María', apellidos: 'Fernández', rol: 'paciente', demo: true };
+        guardarSesion('', usuarioDemo);
+        onLoginSuccess?.(usuarioDemo);
+        return;
+      }
+      alert(error.message || 'No se pudo iniciar sesión.');
     }
   };
 
@@ -34,7 +41,7 @@ export default function LoginPage({ onLoginSuccess, goToRegistro, onNavigateSect
       <div className={styles.hero}>
         <img
           className={styles.illustration}
-          src="/assets/abuelo.png"
+          src={publicUrl('assets/abuelo.png')}
           alt="Persona adulta mayor sonriendo, usando MediSalud"
         />
 

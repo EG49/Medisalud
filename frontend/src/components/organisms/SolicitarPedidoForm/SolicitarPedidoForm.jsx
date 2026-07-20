@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import Button from '../../atoms/Button/Button';
-import { mockRecetas } from '../../../features/paciente/mockRecetas';
 import {
   calcularDisponible,
   estaPorAcabarse,
@@ -8,10 +7,20 @@ import {
 } from '../../../features/paciente/medicineAvailability';
 import styles from './SolicitarPedidoForm.module.css';
 
-export default function SolicitarPedidoForm({ direccionDefault, onCancelar, onConfirmar }) {
+/**
+ * Recibe `recetas` (documentos con items) desde la page — el organism no
+ * sabe de HTTP ni de mocks, solo pinta lo que le pasan (Atomic Design).
+ */
+export default function SolicitarPedidoForm({
+  recetas = [],
+  direccionDefault,
+  onCancelar,
+  onConfirmar,
+  deshabilitado = false,
+}) {
   const medicinas = useMemo(
     () =>
-      mockRecetas
+      recetas
         .flatMap((receta) => receta.items)
         .filter((item) => item.activa)
         .map((item) => {
@@ -19,7 +28,7 @@ export default function SolicitarPedidoForm({ direccionDefault, onCancelar, onCo
           const total = item.cantidadTotal ?? totalTomas(item);
           return { item, disponible, total, sugerido: estaPorAcabarse(disponible) };
         }),
-    []
+    [recetas]
   );
 
   const [seleccion, setSeleccion] = useState(() =>
@@ -95,8 +104,8 @@ export default function SolicitarPedidoForm({ direccionDefault, onCancelar, onCo
         <button type="button" className={styles.cancelar} onClick={onCancelar}>
           Cancelar
         </button>
-        <Button type="submit" disabled={!haySeleccion}>
-          Confirmar pedido
+        <Button type="submit" disabled={!haySeleccion || deshabilitado}>
+          {deshabilitado ? 'Enviando…' : 'Confirmar pedido'}
         </Button>
       </div>
     </form>

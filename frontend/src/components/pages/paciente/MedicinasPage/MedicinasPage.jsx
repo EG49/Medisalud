@@ -2,14 +2,18 @@ import DashboardLayout from '../../../templates/DashboardLayout/DashboardLayout'
 import MedicineCard from '../../../molecules/MedicineCard/MedicineCard';
 import { pacienteSidebarMenu } from '../../../../features/paciente/sidebarMenu';
 import { mockRecetas } from '../../../../features/paciente/mockRecetas';
+import { getRecetas } from '../../../../api/pacienteApi';
+import { useApi } from '../../../../api/useApi';
 import { calcularDisponible, totalTomas } from '../../../../features/paciente/medicineAvailability';
 import styles from './MedicinasPage.module.css';
 
 export default function MedicinasPage({ usuario, onLogout, onNavigate }) {
-  // TODO: reemplazar mockRecetas por recetaApi.getMisRecetas() cuando exista el backend.
+  // Datos reales del backend; si no hay servidor (demo/offline) usa los mocks.
+  const { datos, cargando } = useApi(getRecetas, mockRecetas);
+
   // Cada receta (documento) puede traer varios medicamentos (items) --
   // aquí los aplanamos porque esta pantalla es "por medicina", no "por documento".
-  const items = mockRecetas.flatMap((receta) => receta.items);
+  const items = (datos ?? []).flatMap((receta) => receta.items);
 
   return (
     <DashboardLayout
@@ -23,6 +27,8 @@ export default function MedicinasPage({ usuario, onLogout, onNavigate }) {
       <p className={styles.subtitle}>
         Aquí ves cuántas dosis te quedan de cada tratamiento y para qué sirve cada una.
       </p>
+
+      {cargando && <p role="status">Cargando tus medicinas…</p>}
 
       <div className={styles.grid}>
         {items.map((item) => {

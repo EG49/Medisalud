@@ -1,6 +1,7 @@
 import Button from '../../atoms/Button/Button';
 import NavLinks from '../../molecules/NavLinks/NavLinks';
 import styles from './Header.module.css';
+import { publicUrl } from '../../../lib/publicUrl';
 
 /**
  * Header reusable entre landing y páginas internas.
@@ -10,7 +11,7 @@ export default function Header({ onIngresar, onRegistrarse, activeHref, onNaviga
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
-        <img src="/assets/logo-icono.png" alt="" className={styles.logo} />
+        <img src={publicUrl('assets/logo-icono.png')} alt="" className={styles.logo} />
         <div>
           <p className={styles.brandName}>MediSalud</p>
           <p className={styles.tagline}>Tu salud en buenas manos</p>
