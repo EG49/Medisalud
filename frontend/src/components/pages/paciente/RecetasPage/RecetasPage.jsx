@@ -2,11 +2,15 @@ import DashboardLayout from '../../../templates/DashboardLayout/DashboardLayout'
 import RecetaCard from '../../../molecules/RecetaCard/RecetaCard';
 import { pacienteSidebarMenu } from '../../../../features/paciente/sidebarMenu';
 import { mockRecetas } from '../../../../features/paciente/mockRecetas';
+import { getRecetas } from '../../../../api/pacienteApi';
+import { useApi } from '../../../../api/useApi';
 import styles from './RecetasPage.module.css';
 
 export default function RecetasPage({ usuario, onLogout, onNavigate }) {
-  // TODO: reemplazar mockRecetas por recetaApi.getMisRecetas() cuando exista el backend.
-  const recetas = [...mockRecetas].sort(
+  // Datos reales del backend; si no hay servidor (demo/offline) usa los mocks.
+  const { datos, cargando } = useApi(getRecetas, mockRecetas);
+
+  const recetas = [...(datos ?? [])].sort(
     (a, b) => new Date(b.fechaEmision) - new Date(a.fechaEmision)
   );
 
@@ -24,6 +28,10 @@ export default function RecetasPage({ usuario, onLogout, onNavigate }) {
       </p>
 
       <div className={styles.list}>
+        {cargando && <p role="status">Cargando tus recetas…</p>}
+        {!cargando && recetas.length === 0 && (
+          <p className={styles.subtitle}>Todavía no tienes recetas registradas.</p>
+        )}
         {recetas.map((receta) => (
           <RecetaCard key={receta.id} receta={receta} />
         ))}

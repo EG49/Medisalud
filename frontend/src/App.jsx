@@ -9,6 +9,7 @@ import ExamenesPage from './components/pages/paciente/ExamenesPage/ExamenesPage'
 import PedidosPage from './components/pages/paciente/PedidosPage/PedidosPage';
 import NotificacionesPage from './components/pages/paciente/NotificacionesPage/NotificacionesPage';
 import PerfilPage from './components/pages/paciente/PerfilPage/PerfilPage';
+import { cerrarSesion, sesionGuardada } from './api/authApi';
 
 /**
  * Navegación temporal con estado local. Se reemplaza por routes/AppRouter.jsx
@@ -25,9 +26,12 @@ const PAGINAS_INTERNAS = {
 };
 
 export default function App() {
+  // Si hay una sesión guardada (PWA: recarga u offline), entra directo al dashboard.
+  const sesionInicial = sesionGuardada();
+
   // 'publico' = landing sin login, es lo primero que ve cualquier visitante.
-  const [vista, setVista] = useState('publico');
-  const [usuario, setUsuario] = useState(null);
+  const [vista, setVista] = useState(sesionInicial ? 'dashboard' : 'publico');
+  const [usuario, setUsuario] = useState(sesionInicial);
   const [paginaActiva, setPaginaActiva] = useState('inicio');
   const [seccionPendiente, setSeccionPendiente] = useState(null);
 
@@ -48,6 +52,7 @@ export default function App() {
   };
 
   const handleLogout = () => {
+    cerrarSesion();
     setUsuario(null);
     setVista('publico');
   };

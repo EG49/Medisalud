@@ -1,15 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 import DashboardLayout from '../../../templates/DashboardLayout/DashboardLayout';
 import NotificationList from '../../../organisms/NotificationList/NotificationList';
 import { pacienteSidebarMenu } from '../../../../features/paciente/sidebarMenu';
 import { mockNotificaciones } from '../../../../features/paciente/mockNotificaciones';
+import {
+  getNotificaciones,
+  marcarNotificacionLeida,
+  marcarTodasLeidas,
+} from '../../../../api/pacienteApi';
+import { useApi } from '../../../../api/useApi';
 import styles from './NotificacionesPage.module.css';
 
 export default function NotificacionesPage({ usuario, onLogout, onNavigate }) {
-  // TODO: reemplazar mockNotificaciones por la combinación real:
-  // offline/notifications/medicineReminders.js (local) + GET /api/paciente/notificaciones (servidor)
-  const [notificaciones, setNotificaciones] = useState(mockNotificaciones);
+  // Datos reales del backend; si no hay servidor (demo/offline) usa los mocks.
+  // Los recordatorios de medicina son locales (offline) y se combinan aparte.
+  const { datos, modoDemo } = useApi(getNotificaciones, mockNotificaciones);
+
+  const [notificaciones, setNotificaciones] = useState([]);
+  useEffect(() => {
+    if (datos) setNotificaciones(datos);
+  }, [datos]);
+
   const [permisoPush, setPermisoPush] = useState(
     typeof Notification !== 'undefined' ? Notification.permission : 'default'
   );
@@ -20,16 +32,23 @@ export default function NotificacionesPage({ usuario, onLogout, onNavigate }) {
     setNotificaciones((prev) =>
       prev.map((n) => (n.id === id ? { ...n, leida: true } : n))
     );
+    if (!modoDemo) {
+      marcarNotificacionLeida(id).catch(() => {
+        /* actualización optimista: si falla, quedará pendiente hasta recargar */
+      });
+    }
   };
 
-  const marcarTodasLeidas = () => {
+  const marcarTodas = () => {
     setNotificaciones((prev) => prev.map((n) => ({ ...n, leida: true })));
+    if (!modoDemo) {
+      marcarTodasLeidas().catch(() => {});
+    }
   };
 
   const activarPush = async () => {
-    // Pide permiso real del navegador. La suscripción real (guardar el
-    // endpoint en el backend para poder enviar push) se conecta cuando
-    // exista Flask -- por ahora solo deja el permiso listo.
+    // Pide permiso real del navegador. La suscripción push completa (guardar
+    // el endpoint en el backend) queda para una siguiente iteración.
     if (typeof Notification === 'undefined') return;
     const resultado = await Notification.requestPermission();
     setPermisoPush(resultado);
@@ -52,7 +71,7 @@ export default function NotificacionesPage({ usuario, onLogout, onNavigate }) {
           </p>
         </div>
         {noLeidas > 0 && (
-          <button type="button" className={styles.marcarTodas} onClick={marcarTodasLeidas}>
+          <button type="button" className={styles.marcarTodas} onClick={marcarTodas}>
             Marcar todo como leído
           </button>
         )}

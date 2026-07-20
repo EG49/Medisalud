@@ -1,1 +1,10 @@
 backend/**/__pycache__/
+node_modules/
+frontend/dist/
+frontend/dev-dist/
+frontend/coverage/
+frontend/cypress/screenshots/
+frontend/cypress/videos/
+backend/venv/
+backend/.env
+*.db

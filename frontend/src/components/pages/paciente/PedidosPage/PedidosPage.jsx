@@ -10,18 +10,64 @@ import {
   mockHistorialPedidos,
   direccionPerfil,
 } from '../../../../features/paciente/mockPedidos';
+import { mockRecetas } from '../../../../features/paciente/mockRecetas';
+import { mockPerfil } from '../../../../features/paciente/mockPerfil';
+import {
+  crearPedido,
+  getFarmacias,
+  getPedidos,
+  getPerfil,
+  getRecetas,
+} from '../../../../api/pacienteApi';
+import { useApi } from '../../../../api/useApi';
 import styles from './PedidosPage.module.css';
 
 export default function PedidosPage({ usuario, onLogout, onNavigate }) {
-  // TODO: reemplazar mocks por pedidoApi.getPedidoActivo() / getHistorial() cuando exista Flask.
-  const [pedidoActivo, setPedidoActivo] = useState(mockPedidoActivo);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  // Datos reales del backend; si no hay servidor (demo/offline) usan los mocks.
+  const {
+    datos: pedidos,
+    modoDemo,
+    recargar,
+  } = useApi(getPedidos, { activo: mockPedidoActivo, historial: mockHistorialPedidos });
+  const { datos: recetas } = useApi(getRecetas, mockRecetas);
+  const { datos: perfil } = useApi(getPerfil, mockPerfil);
 
-  const handleConfirmarPedido = ({ direccion, medicamentos }) => {
-    // TODO: esto se vuelve pedidoApi.crearPedido(...) -- si no hay conexión,
-    // se encola en offline/sync/syncQueue.js tal como definimos.
-    console.log('Nuevo pedido solicitado:', { direccion, medicamentos });
-    setMostrarFormulario(false);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+
+  const pedidoActivo = pedidos?.activo ?? null;
+  const historial = pedidos?.historial ?? [];
+
+  const handleConfirmarPedido = async ({ direccion, medicamentos }) => {
+    if (modoDemo) {
+      // Sin backend: comportamiento demo, solo cierra el formulario.
+      console.log('Pedido demo solicitado:', { direccion, medicamentos });
+      setMostrarFormulario(false);
+      return;
+    }
+
+    setEnviando(true);
+    try {
+      // El formulario no elige farmacia — usamos la primera del catálogo
+      // y como cantidad se repone el tratamiento completo de cada medicina.
+      const farmacias = await getFarmacias();
+      if (!farmacias.length) throw new Error('No hay farmacias disponibles.');
+
+      await crearPedido({
+        direccionEntrega: direccion,
+        items: medicamentos.map((item) => ({
+          recetaItemId: item.id,
+          farmaciaId: farmacias[0].id,
+          cantidad: item.cantidadTotal,
+        })),
+      });
+      setMostrarFormulario(false);
+      await recargar();
+    } catch (error) {
+      alert(error.message || 'No se pudo crear el pedido.');
+    } finally {
+      setEnviando(false);
+    }
   };
 
   return (
@@ -41,19 +87,23 @@ export default function PedidosPage({ usuario, onLogout, onNavigate }) {
         {pedidoActivo && <PedidoActivoCard pedido={pedidoActivo} />}
 
         {!mostrarFormulario ? (
-          <Button onClick={() => setMostrarFormulario(true)}>+ Solicitar nueva entrega</Button>
+          <Button onClick={() => setMostrarFormulario(true)} disabled={Boolean(pedidoActivo) && !modoDemo}>
+            + Solicitar nueva entrega
+          </Button>
         ) : (
           <SolicitarPedidoForm
-            direccionDefault={direccionPerfil}
+            recetas={recetas ?? []}
+            direccionDefault={perfil?.direccion ?? direccionPerfil}
             onCancelar={() => setMostrarFormulario(false)}
             onConfirmar={handleConfirmarPedido}
+            deshabilitado={enviando}
           />
         )}
 
         <section className={styles.historial}>
           <h2 className={styles.historialTitulo}>Historial de pedidos</h2>
           <div className={styles.historialGrid}>
-            {mockHistorialPedidos.map((pedido) => (
+            {historial.map((pedido) => (
               <PedidoHistorialCard key={pedido.id} pedido={pedido} />
             ))}
           </div>

@@ -1,4 +1,5 @@
 import styles from './Footer.module.css';
+import { publicUrl } from '../../../lib/publicUrl';
 
 const SERVICIOS = ['Resultados', 'Recetas', 'Farmacia'];
 const INFORMACION = ['Sobre Nosotros', 'Preguntas Frecuentes', 'Privacidad'];
@@ -8,7 +9,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.top}>
         <div className={styles.brandBlock}>
-          <img src="/assets/logo-icono.png" alt="" className={styles.logoFooter} />
+          <img src={publicUrl('assets/logo-icono.png')} alt="" className={styles.logoFooter} />
           <p className={styles.brandName}>MediSalud</p>
           <p className={styles.tagline}>Tu salud en buenas manos</p>
         </div>

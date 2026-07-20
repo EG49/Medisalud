@@ -1,5 +1,6 @@
 import { Smile, ShieldCheck, FileHeart, BellRing, Users } from 'lucide-react';
 import styles from './BenefitsSection.module.css';
+import { publicUrl } from '../../../lib/publicUrl';
 
 const BENEFICIOS = [
   { icon: Smile, texto: 'Fácil de usar' },
@@ -24,7 +25,7 @@ export default function BenefitsSection() {
           ))}
         </ul>
 
-        <img src="/assets/beneficios-ilustracion.png" alt="" className={styles.imagen} />
+        <img src={publicUrl('assets/beneficios-ilustracion.png')} alt="" className={styles.imagen} />
       </div>
     </section>
   );

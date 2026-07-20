@@ -1,0 +1,135 @@
+# Tarea 6 — CI/CD: en cada push/PR corre la pirámide de pruebas completa;
+# en cada push a main, además, despliega automáticamente a GitHub Pages
+# y audita el sitio publicado con Lighthouse.
+#
+# Requisito único de configuración (una sola vez, por el dueño del repo):
+#   Settings → Pages → Source: "GitHub Actions"
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  pruebas-unitarias:
+    name: Pruebas unitarias (Jest, cobertura ≥80%)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Instalar dependencias
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+      - name: Jest con cobertura (falla si baja del 80%)
+        run: npm run test:coverage
+      - name: Publicar reporte de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-cobertura
+          path: frontend/coverage
+
+  pruebas-e2e:
+    name: Pruebas E2E (Cypress + backend real)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Backend Flask con SQLite + datos seed (mismos datos que los mocks)
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Instalar backend
+        working-directory: backend
+        run: pip install -r requirements.txt
+      - name: Seed + levantar backend
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite:////tmp/medisalud.db
+        run: |
+          python seed.py
+          nohup python run.py > /tmp/flask.log 2>&1 &
+          sleep 3
+          curl --fail http://localhost:5000/api/health
+
+      # Frontend (Vite dev server) + Cypress
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Cypress (flujos críticos)
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: frontend
+          start: npm run dev
+          wait-on: 'http://localhost:5173'
+          wait-on-timeout: 90
+      - name: Guardar capturas si algo falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-capturas
+          path: |
+            frontend/cypress/screenshots
+            /tmp/flask.log
+
+  desplegar:
+    name: Build PWA + deploy a GitHub Pages
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [pruebas-unitarias, pruebas-e2e]
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+      - name: Build de producción (PWA)
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_BASE: /Medisalud/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  lighthouse:
+    name: Auditoría Lighthouse del sitio publicado
+    needs: desplegar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            https://eg49.github.io/Medisalud/
+          uploadArtifacts: true
+          artifactName: reporte-lighthouse

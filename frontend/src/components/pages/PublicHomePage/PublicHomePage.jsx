@@ -6,6 +6,7 @@ import StepCard from '../../organisms/StepCard/StepCard';
 import BenefitsSection from '../../organisms/BenefitsSection/BenefitsSection';
 import PharmaciesSection from '../../organisms/PharmaciesSection/PharmaciesSection';
 import styles from './PublicHomePage.module.css';
+import { publicUrl } from '../../../lib/publicUrl';
 
 const SECCIONES = ['#inicio', '#como-funciona', '#servicio', '#contactos'];
 
@@ -61,7 +62,7 @@ export default function PublicHomePage({ onIngresar, onRegistrarse, scrollTarget
               </Button>
             </div>
           </div>
-          <img src="/assets/landing-hero.png" alt="" className={styles.heroImagen} />
+          <img src={publicUrl('assets/landing-hero.png')} alt="" className={styles.heroImagen} />
         </section>
 
         <section id="como-funciona" className={styles.pasos}>
@@ -70,17 +71,17 @@ export default function PublicHomePage({ onIngresar, onRegistrarse, scrollTarget
             <StepCard
               titulo="Regístrate"
               descripcion="Ingresa tu cédula y número celular."
-              imagenSrc="/assets/paso-registrarte.png"
+              imagenSrc={publicUrl('assets/paso-registrarte.png')}
             />
             <StepCard
               titulo="Busca Medicamento"
               descripcion="Encuentra medicamentos disponibles en farmacias cercanas."
-              imagenSrc="/assets/paso-buscar-medicamento.png"
+              imagenSrc={publicUrl('assets/paso-buscar-medicamento.png')}
             />
             <StepCard
               titulo="Recibe Asistencia"
               descripcion="Gestionamos el acceso a tus medicamentos y servicios de salud."
-              imagenSrc="/assets/paso-recibir-asistencia.png"
+              imagenSrc={publicUrl('assets/paso-recibir-asistencia.png')}
             />
           </div>
         </section>
@@ -95,7 +96,7 @@ export default function PublicHomePage({ onIngresar, onRegistrarse, scrollTarget
               desde la comodidad de tu hogar.
             </p>
           </div>
-          <img src="/assets/consulta-doctor.png" alt="" className={styles.consultaImagen} />
+          <img src={publicUrl('assets/consulta-doctor.png')} alt="" className={styles.consultaImagen} />
         </section>
 
         <PharmaciesSection />

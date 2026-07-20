@@ -4,6 +4,8 @@ import BodyDiagram from '../../../organisms/BodyDiagram/BodyDiagram';
 import ExamenCard from '../../../molecules/ExamenCard/ExamenCard';
 import { pacienteSidebarMenu } from '../../../../features/paciente/sidebarMenu';
 import { mockExamenes, contarExamenesPorZona } from '../../../../features/paciente/mockExamenes';
+import { getExamenes } from '../../../../api/pacienteApi';
+import { useApi } from '../../../../api/useApi';
 import styles from './ExamenesPage.module.css';
 
 const ETIQUETA_ZONA = {
@@ -18,10 +20,11 @@ const ETIQUETA_ZONA = {
 };
 
 export default function ExamenesPage({ usuario, onLogout, onNavigate }) {
-  // TODO: reemplazar mockExamenes por examenApi.getMisExamenes() cuando exista el backend.
+  // Datos reales del backend; si no hay servidor (demo/offline) usa los mocks.
+  const { datos, cargando } = useApi(getExamenes, mockExamenes);
   const [zonaActiva, setZonaActiva] = useState(null);
 
-  const examenes = mockExamenes;
+  const examenes = datos ?? [];
   const conteoPorZona = useMemo(() => contarExamenesPorZona(examenes), [examenes]);
 
   const examenesFiltrados = zonaActiva
@@ -31,8 +34,6 @@ export default function ExamenesPage({ usuario, onLogout, onNavigate }) {
   const examenesOrdenados = [...examenesFiltrados].sort(
     (a, b) => new Date(b.fecha) - new Date(a.fecha)
   );
-
-  const zonasConDatos = Object.keys(conteoPorZona);
 
   return (
     <DashboardLayout
@@ -83,7 +84,9 @@ export default function ExamenesPage({ usuario, onLogout, onNavigate }) {
             </p>
           )}
 
-          {examenesOrdenados.length === 0 ? (
+          {cargando && <p role="status">Cargando tus exámenes…</p>}
+
+          {!cargando && examenesOrdenados.length === 0 ? (
             <p className={styles.vacio}>No hay exámenes registrados en esta zona todavía.</p>
           ) : (
             <div className={styles.lista}>
