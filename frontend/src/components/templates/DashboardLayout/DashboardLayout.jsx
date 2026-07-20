@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, WifiOff } from 'lucide-react';
 import Sidebar from '../../organisms/Sidebar/Sidebar';
+import { useConnectionStatus } from '../../../offline/status/connectionStatus';
 import styles from './DashboardLayout.module.css';
 
 /**
@@ -18,6 +19,7 @@ export default function DashboardLayout({
   children,
 }) {
   const [isMobileOpen, setMobileOpen] = useState(false);
+  const enLinea = useConnectionStatus();
 
   return (
     <div className={styles.layout}>
@@ -33,6 +35,13 @@ export default function DashboardLayout({
       />
 
       <div className={styles.contentArea}>
+        {!enLinea && (
+          <div className={styles.offlineBanner} role="status">
+            <WifiOff size={18} aria-hidden="true" />
+            Sin conexión — mostrando la última información guardada
+          </div>
+        )}
+
         <div className={styles.mobileTopbar}>
           <button
             type="button"

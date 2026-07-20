@@ -52,3 +52,52 @@ def test_login_con_codigo_incorrecto_falla(client):
         json={"cedula": "0900000000", "celular": "0980000000", "codigo": "000000"},
     )
     assert login_resp.status_code == 400
+
+
+def test_registro_medico(client):
+    resp = client.post(
+        "/api/auth/registro",
+        json={
+            "rol": "medico",
+            "nombre": "Carlos",
+            "apellidos": "Andrade",
+            "cedula": "0911111111",
+            "celular": "0991111111",
+            "especialidad": "Medicina General",
+            "num_licencia": "MG-12345",
+        },
+    )
+    assert resp.status_code == 201
+    assert resp.get_json()["rol"] == "medico"
+
+
+def test_registro_repartidor(client):
+    resp = client.post(
+        "/api/auth/registro",
+        json={
+            "rol": "repartidor",
+            "nombre": "Juan",
+            "apellidos": "Pérez",
+            "cedula": "0922222222",
+            "celular": "0992222222",
+            "vehiculo": "Moto",
+            "zona_cobertura": "Norte de Guayaquil",
+        },
+    )
+    assert resp.status_code == 201
+    assert resp.get_json()["rol"] == "repartidor"
+
+
+def test_registro_admin_publico_esta_bloqueado(client):
+    resp = client.post(
+        "/api/auth/registro",
+        json={
+            "rol": "admin",
+            "nombre": "Intento",
+            "apellidos": "No autorizado",
+            "cedula": "0933333333",
+            "celular": "0993333333",
+        },
+    )
+    assert resp.status_code == 400
+    assert "no puede registrarse" in resp.get_json()["message"]

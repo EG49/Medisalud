@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Pill, FileText, Stethoscope, Truck } from 'lucide-react';
 import DashboardLayout from '../../../templates/DashboardLayout/DashboardLayout';
 import MedicineCard from '../../../molecules/MedicineCard/MedicineCard';
@@ -13,12 +14,27 @@ import {
   estaPorAcabarse,
   calcularDisponible,
 } from '../../../../features/paciente/medicineAvailability';
+import {
+  programarRecordatorio,
+  revisarTomasPerdidas,
+} from '../../../../offline/notifications/medicineReminders';
 import styles from './InicioPage.module.css';
 
 export default function InicioPage({ usuario, onLogout, onNavigate }) {
   // TODO: cada mock aquí se reemplaza por su api/*Api.js correspondiente cuando exista Flask.
   const itemsRecetas = mockRecetas.flatMap((receta) => receta.items);
   const proximaToma = proximaTomaGeneral(itemsRecetas);
+
+  useEffect(() => {
+    // Al entrar a Inicio: revisa si hubo tomas que se pasaron mientras la
+    // app estaba cerrada, y programa el resto de recordatorios pendientes.
+    revisarTomasPerdidas();
+    itemsRecetas.forEach((item) => {
+      if (item.activa) programarRecordatorio(item);
+    });
+    // Solo al montar -- no queremos reprogramar en cada render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const examenMasReciente = [...mockExamenes].sort(
     (a, b) => new Date(b.fecha) - new Date(a.fecha)

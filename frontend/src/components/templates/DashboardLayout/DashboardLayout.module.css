@@ -20,6 +20,19 @@
   box-shadow: var(--shadow-card);
 }
 
+.offlineBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-bold);
+  padding: 0.6rem 1.5rem;
+  text-align: center;
+  justify-content: center;
+}
+
 .menuButton {
   background: none;
   border: none;
