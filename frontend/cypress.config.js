@@ -7,7 +7,7 @@ export default defineConfig({
     video: false,
     env: {
       // URL del backend Flask que corre junto a las pruebas (ver ci.yml)
-      apiUrl: 'http://localhost:5000/api',
+      apiUrl: 'http://127.0.0.1:5000/api',
     },
   },
 });
